@@ -1,0 +1,72 @@
+body {
+    text-align: center;
+}
+
+* {
+    margin: 8px;
+    padding: 2px;
+    margin: auto;
+}
+
+#title {
+    text-decoration: none;
+    color: black;
+    font-size: 32px;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+    font-size: 1.35em;
+}
+
+#loginbut {
+    font-size: 28px;
+    text-decoration: none;
+    color: grey;
+}
+
+#index-body {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+#navbar {
+    height: 75px;
+}
+
+footer {
+    height: 10px;   
+    padding-top: 180px;
+    padding-bottom: 20px;
+}
+
+.at-magnifier-wrapper {
+    height: 0px;
+}
+
+#carouselExampleControls {
+    width: 825px;
+}
+
+#exampleInputEmail1 {
+    width: 35%;
+    margin: auto;
+}
+
+#exampleInputPassword1 {
+    width: 35%;
+    margin: auto;
+}
+
+.list-group {
+    width: 0%;
+    text-align: center;
+    justify-content: center;
+}
+
+.list-group-item {
+    min-width: 200px;
+}
+
+
