@@ -5,9 +5,10 @@
         <input style="width: 250px;" name="tag">
         <input type="submit" value=" Поиск ">
     </form>-->
-    <div class='container'>
-        <div class='row justify-content-md-center'>
+    <div class='container-fluid'>
+        <div class='row justify-content-xl-center'>
             <c:forEach var="product" items="${listProducts2}">
+                <div class="col">
                 <form style="width: 30%" action="buyProduct" method="POST">
                     <input type="text" name="productId" value="${product.id}" hidden>                
                     <div class="card" style="width: 18rem;">
@@ -40,7 +41,8 @@
                     </div>
                     </div>
                   </div>
-                </form>                  
+                </form>     
+                </div>
             </c:forEach>
         </div>
     </div>

@@ -23,13 +23,17 @@ public class User implements Serializable{
     private String password;
     @OneToOne
     private Person person;
+    private String salt;
+    
+    
 
     public User() {
     }
 
-    public User(String login, String password, Person person) {
+    public User(String login, String password, String salt, Person person) {
         this.login = login;
         this.password = password;
+        this.salt = salt;
         this.person = person;
     }
 
@@ -108,6 +112,14 @@ public class User implements Serializable{
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
     
 }

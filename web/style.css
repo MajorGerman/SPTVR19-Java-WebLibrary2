@@ -20,10 +20,22 @@ a {
     font-size: 1.35em;
 }
 
-#loginbut {
+#loginForm {
     font-size: 28px;
     text-decoration: none;
     color: grey;
+}
+
+#logout {
+    font-size: 28px;
+    text-decoration: none;
+    color: grey;
+}
+
+#regForm {
+    font-size: 28px;
+    text-decoration: none;
+    color: grey;   
 }
 
 #index-body {
@@ -32,7 +44,7 @@ a {
 }
 
 #navbar {
-    height: 75px;
+    height: 125px;
 }
 
 footer {
@@ -49,7 +61,7 @@ footer {
     width: 825px;
 }
 
-#exampleInputEmail1 {
+#name, #price, #tag, #description, #photo, #login, #password {
     width: 35%;
     margin: auto;
 }
@@ -68,5 +80,3 @@ footer {
 .list-group-item {
     min-width: 200px;
 }
-
-

@@ -4,8 +4,9 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-link" href="buyProductForm">Каталог</a>
-        <a class="nav-link" href="addProductForm" ${managerhidden}hidden>  Добавить товар  </a>
+        <a id='addProductFormPage' class="nav-link" href="addProductForm" ${managerhidden}hidden>  Добавить товар  </a>
         <a class="nav-link" href="editProductForm1" ${managerhidden}hidden>  Изменить товар  </a>
+        <a class="nav-link" href="doSaleForm" ${managerhidden}hidden>  Сделать распродажу  </a>
         <a class="nav-link" href="listPersons" ${adminhidden}hidden>  Список покупателей  </a> 
         <a class="nav-link" href="editPersonForm1" ${userhidden}hidden>  Изменить данные пользователя  </a>
         <a class="nav-link" href="showProfile" ${userhidden}hidden>  Профиль  </a> 

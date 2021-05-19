@@ -19,12 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import tools.EncryptPassword;
 
 
 @WebServlet(name = "LoginServlet", loadOnStartup = 1, urlPatterns = {
@@ -52,6 +54,9 @@ public class LoginServlet extends HttpServlet {
     @EJB 
     private HistoryFacade historyFacade;
     
+    @Inject
+    private EncryptPassword encryptPassword;
+    
     public static final ResourceBundle pathToJsp = ResourceBundle.getBundle("property.pathToJsp");
     
     @Override
@@ -62,10 +67,12 @@ public class LoginServlet extends HttpServlet {
         if (userFacade.findAll().size() > 0) return;
         
         //Create SuperAdmin
-        
+        String salt = encryptPassword.createSalt();
+        String password;           
+        password = encryptPassword.createHash("12345", salt);
         Person pers = new Person("Georg", "Laabe", "+37258317253", 99999999);
         personFacade.create(pers);
-        User user = new User("admin", "12345", pers);
+        User user = new User("admin", password, salt, pers);
         userFacade.create(user);
         
         Role role = new Role("admin");
@@ -82,6 +89,14 @@ public class LoginServlet extends HttpServlet {
         roleFacade.create(role);
         userRoles = new UserRoles(user, role);
         userRolesFacade.create(userRoles);
+        
+        //Create base customer
+        salt = encryptPassword.createSalt();          
+        password = encryptPassword.createHash("12345", salt);
+        pers = new Person("Vsevolod", "Boltov", "+37253014522", 350);
+        personFacade.create(pers);
+        user = new User("customer", password, salt, pers);
+        userFacade.create(user);
         
     }
         
@@ -115,7 +130,9 @@ public class LoginServlet extends HttpServlet {
                     request.getRequestDispatcher("/showLoginForm").forward(request, response);
                     break;
                 }
-                if (!password.equals(user.getPassword())) {
+                String salt = user.getSalt();
+                String password_enc = encryptPassword.createHash(password, salt);
+                if (!password_enc.equals(user.getPassword())) {
                     request.setAttribute("info", "Неправильный логин или пароль!"); 
                     request.getRequestDispatcher("/showLoginForm").forward(request, response);
                     break;                    
@@ -183,7 +200,9 @@ public class LoginServlet extends HttpServlet {
                 }
                 Person pers = new Person(name, surname, phone, Integer.parseInt(money));
                 personFacade.create(pers);
-                user = new User(login, password, pers);
+                salt = encryptPassword.createSalt();
+                password_enc = encryptPassword.createHash(password, salt);
+                user = new User(login, password_enc, salt, pers);
                 userFacade.create(user);
                 Role roleReader = roleFacade.findByName("customer");
                 UserRoles userRoles = new UserRoles(user, roleReader);

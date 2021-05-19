@@ -13,14 +13,14 @@
     </head>
     <body>  
         <div><a id="title" href="index.jsp"> Магазин Георга Лаабе </a></div>    
-            <a id="loginbut" href="showLoginForm" ${hiddenlogin}> Войти </a>
-            <a id="loginbut" href="logout" ${hiddenlogout}hidden> Выйти </a>  
-            <a id="loginbut" href="addPersonForm" ${hiddenreg}> Регистрация </a>  
+            <a id="loginForm" href="showLoginForm" ${hiddenlogin}> Войти </a>
+            <a id="logout" href="logout" ${hiddenlogout}hidden> Выйти </a>  
+            <a id="regForm" href="addPersonForm" ${hiddenreg}> Регистрация </a>  
             <div class="container-lg">    
                 <c:set var="info" value="${info}"/>  
                 <c:if test="${info != null}">  
                   <div style="width: 55%;" class="alert alert-info alert-dismissible fade show" data-bs-dismiss="alert" role="alert">
-                  <strong>${info}</strong>
+                  <strong id="info">${info}</strong>
                 </div>  
                 </c:if>  
                 <hr>

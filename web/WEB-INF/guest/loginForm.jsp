@@ -4,11 +4,11 @@
     <form action="login" method="POST">
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Логин</label>
-            <input name="login" type="text" class="form-control" id="exampleInputEmail1">
+            <input name="login" type="text" class="form-control" id="login">
         </div>
         <div class="mb-3">
             <label for="exampleInputPassword1" class="form-label">Пароль</label>
-            <input name="password" type="password" class="form-control" id="exampleInputPassword1">
+            <input name="password" type="password" class="form-control" id="password">
         </div>
         <button type="submit" class="btn btn-primary"> Готово </button>
     </form>

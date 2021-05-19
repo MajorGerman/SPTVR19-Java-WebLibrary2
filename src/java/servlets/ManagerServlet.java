@@ -133,7 +133,7 @@ public class ManagerServlet extends HttpServlet {
                 tags.add(tag);
                 product.setTags(tags);
                 productFacade.create(product);
-                request.setAttribute("info","Добавлен товар: " + product.toString() );
+                request.setAttribute("info","Товар успешно добавлен!");
                 request.getRequestDispatcher(LoginServlet.pathToJsp.getString("index")).forward(request, response);
                 break;
             case "/editProductForm1":
