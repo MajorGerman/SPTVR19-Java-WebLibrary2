@@ -1,24 +1,22 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entity;
 
+import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-/**
- *
- * @author Georg
- */
 @Stateless
 public class UserRolesFacade extends AbstractFacade<UserRoles> {
 
     @PersistenceContext(unitName = "SPTVR19-Laabe-Java-WebShopPU")
     private EntityManager em;
-
+    
+    @EJB
+    private RoleFacade roleFacade;
+    @EJB
+    private UserRolesFacade userRolesFacade;
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
@@ -46,5 +44,34 @@ public class UserRolesFacade extends AbstractFacade<UserRoles> {
         } catch (Exception e) {
             return null;
         }
-    }  
+    }
+    
+    public String getTopRoleForUser(User user) {
+        if(user == null) return "";
+        List<UserRoles> listUserRoles = em.createQuery("SELECT userRoles FROM UserRoles userRoles WHERE userRoles.user = :user")
+                .setParameter("user", user)
+                .getResultList();
+        for(int i=0;i<listUserRoles.size();i++){
+            if("admin".equals(listUserRoles.get(i).getRole().getRoleName())){
+                return "admin";
+            }
+        }
+        for(int i=0;i<listUserRoles.size();i++){
+            if("manager".equals(listUserRoles.get(i).getRole().getRoleName())){
+                return "manager";
+            }
+        }
+        for(int i=0;i<listUserRoles.size();i++){
+            if("reader".equals(listUserRoles.get(i).getRole().getRoleName())){
+                return "reader";
+            }
+        }
+        return "";
+    }
+    
+    public void setRole(String roleName, User user) {
+        Role role = roleFacade.findByName(roleName);
+        UserRoles userRoles = new UserRoles(user, role);
+        userRolesFacade.create(userRoles);
+    }
 }

@@ -1,4 +1,5 @@
 <html>
+    
     <head>
         <title>Кухонный магазин Георга Лаабе</title>
         <meta charset="UTF-8">
@@ -8,9 +9,45 @@
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+        <script type="module" src="js/App.js"></script>
     </head>
     
     <body>
-        <div class="container"></div>
+        <div class="container-fluid">
+            
+            <div hidden style="width: 55%;" class="alert alert-info alert-dismissible fade show" data-bs-dismiss="alert" role="alert">
+                <strong id="info"></strong>
+            </div>  
+            
+            <nav id="navbar" class="navbar navbar-expand-md navbar-light bg-light">
+                <div class="container-fluid">
+                  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        
+                      <a class="nav-link" id="buyProductForm" href="#buyProductForm">Каталог</a>
+                      <a class="nav-link" id='addProductForm'  href="#addProductForm" ${managerhidden}hidden>  Добавить товар  </a>
+                      <a class="nav-link" id="editProductForm" href="#editProductForm1" ${managerhidden}hidden>  Изменить товар  </a>
+                      <a class="nav-link" id="discountForm" href=#discountForm" ${managerhidden}hidden>  Сделать распродажу  </a>
+                      <a class="nav-link" id="listPersons" href="#listPersons" ${adminhidden}hidden>  Список покупателей  </a> 
+                      <a class="nav-link" id="editPersonForm" href="#editPersonForm1" ${userhidden}hidden>  Изменить данные пользователя  </a>
+                      <a class="nav-link" id="showProfile" href="#showProfile" ${userhidden}hidden>  Профиль  </a>       
+                      
+                      <a class="nav-link" id="loginForm" href="#showLoginForm" ${hiddenlogin}> Войти </a>
+                      <a class="nav-link" id="logout" href="#logout" ${hiddenlogout}hidden> Выйти </a>  
+                      <a class="nav-link" id="regForm" href="#addPersonForm" ${hiddenreg}> Регистрация </a> 
+                      
+                    </div>
+                  </div>
+                </div>
+              </nav>
+            
+            <div id="context"></div>
+             
+        </div>
     </body>
+    
+    <footer class="mt-5 py-1 text-center fixed-bottom">
+        <h5 style='font-size: 16px;'>IVKHK 2021 Sillamäe</h5>
+    </footer>
+    
 </html>
