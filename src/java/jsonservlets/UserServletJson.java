@@ -25,6 +25,7 @@ import tools.EncryptPassword;
 
 @WebServlet(name = "UserServletJson", urlPatterns = {
     "/showProfileJson",
+    "/buyProductJson"
 })
 public class UserServletJson extends HttpServlet {
     @EJB UserFacade userFacade;

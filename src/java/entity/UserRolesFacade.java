@@ -62,8 +62,8 @@ public class UserRolesFacade extends AbstractFacade<UserRoles> {
             }
         }
         for(int i=0;i<listUserRoles.size();i++){
-            if("reader".equals(listUserRoles.get(i).getRole().getRoleName())){
-                return "reader";
+            if("customer".equals(listUserRoles.get(i).getRole().getRoleName())){
+                return "customer";
             }
         }
         return "";

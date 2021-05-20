@@ -22,10 +22,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import entity.PersonFacade;
+import entity.Product;
+import entity.ProductFacade;
 import entity.Role;
+import entity.RoleFacade;
 import entity.UserFacade;
 import entity.UserRoles;
 import entity.UserRolesFacade;
+import java.util.ArrayList;
+import java.util.List;
+import javax.json.JsonArrayBuilder;
+import jsonbuilders.JsonProductBuilder;
+import servlets.LoginServlet;
 import tools.EncryptPassword;
 
 /**
@@ -36,12 +44,14 @@ import tools.EncryptPassword;
     "/createUserJson",
     "/loginJson",
     "/logoutJson",
-    
+    "/printBuyProductFormJson"
 })
 public class LoginServletJson extends HttpServlet {
     @EJB UserFacade userFacade;
     @EJB PersonFacade personFacade;
     @EJB UserRolesFacade userRolesFacade;
+    @EJB ProductFacade productFacade;
+    @EJB RoleFacade roleFacade;
     
     @Inject EncryptPassword encryptPassword;
     /**
@@ -86,7 +96,7 @@ public class LoginServletJson extends HttpServlet {
                     break;
                 }
                 
-                Role role = new Role("customer");
+                Role role = roleFacade.findByName("customer");
                 UserRoles userRoles = new UserRoles(user, role);
                 userRolesFacade.create(userRoles);
                 
@@ -144,6 +154,33 @@ public class LoginServletJson extends HttpServlet {
                         .build()
                         .toString();
                 }
+                break;
+                
+            case "/printBuyProductFormJson":
+                
+                List<Product> listProductsOr = productFacade.findAll();
+                List<Product> listProducts = new ArrayList<>();
+                if (listProductsOr.size() > 0) {
+                    for (int i = 0; i < listProductsOr.size(); i++) {
+                        if (listProductsOr.get(i).isAccess() == true) {
+                            listProducts.add(listProductsOr.get(i));
+                        }
+                    }
+                }
+                
+                if (listProducts.isEmpty()) {
+                    json = job.add("requestStatus", "false")
+                        .add("info", "Товаров сейчас нет!")
+                        .build()
+                        .toString();      
+                    break;
+                }
+                
+                JsonArrayBuilder jab = Json.createArrayBuilder();
+                listProducts.forEach((product) ->  {
+                    jab.add(new JsonProductBuilder().createJsonProduct(product));
+                });
+                json = jab.build().toString();
                 break;
         }
         if(json == null && "".equals(json)){

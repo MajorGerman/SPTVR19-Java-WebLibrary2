@@ -1,13 +1,14 @@
 import {authModule} from './AuthModule.js';
 import {userModule} from './UserModule.js';
-//import {bookModule} from './BookModule.js';
+import {productModule} from './ProductModule.js';
 
 document.getElementById("buyProductForm").onclick = function (){
     toogleMenuActive("buyProductForm");
-    bookModule.printAddBookForm();
+    productModule.printBuyProductForm();
 };
 document.getElementById("addProductForm").onclick = function (){
     toogleMenuActive("addProductForm");
+    productModule.printAddProductForm();
 };
 document.getElementById("editProductForm").onclick = function (){
     toogleMenuActive("editProductForm");

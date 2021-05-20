@@ -1,7 +1,16 @@
+.list-group-item {
+    min-width: 200px;
+}
+
 .list-group {
     width: 50%;
 }
 
-.list-group-item {
-    min-width: 200px;
+.nav-link {
+    transition: 0.95s;
+}
+
+.nav-link:hover {
+    /*transform: scale(1.05);*/
+    background-color: #e4e4e4;
 }

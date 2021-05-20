@@ -1,6 +1,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
@@ -8,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
 
 @Entity
 public class Product implements Serializable{
@@ -20,6 +22,10 @@ public class Product implements Serializable{
     @OneToOne
     private Cover cover;
     private boolean access;
+    private int discount;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date discountDate;
+    private int discountDuration;
 
     public Cover getCover() {
         return cover;
@@ -116,6 +122,31 @@ public class Product implements Serializable{
     public void setTags(List<String> tags) {
         this.tags = tags;
     }
+
+    public int getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(int discount) {
+        this.discount = discount;
+    }
+
+    public Date getDiscountDate() {
+        return discountDate;
+    }
+
+    public void setDiscountDate(Date discountDate) {
+        this.discountDate = discountDate;
+    }
+
+    public int getDiscountDuration() {
+        return discountDuration;
+    }
+
+    public void setDiscountDuration(int discountDuration) {
+        this.discountDuration = discountDuration;
+    }
+    
     
     
     
