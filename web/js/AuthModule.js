@@ -48,6 +48,7 @@ class AuthModule{
        var result = await response.json();
        if(response.ok){
         document.getElementById('info').innerHTML = result.info;
+        document.getElementById('infobox').style.display = 'block';
         console.log("Request status: "+result.requestStatus);
         document.getElementById('context').innerHTML='';
         if(result.requestStatus){
@@ -61,6 +62,7 @@ class AuthModule{
         }
       }else{
         console.log("Ошибка получения данных");
+        document.getElementById('infobox').style.display = 'none';
       }
       authModule.toogleMenu();
       // console.log('Auth: token'+sessionStorage.getItem('token'));
@@ -74,8 +76,8 @@ class AuthModule{
           'Content-Type': 'application/json;charset:utf8'
         }
       });
+      const result = await response.json();
       if(response.ok){
-        const result = await response.json();
         authModule.printLoginForm();
         if(result.requestStatus){
           sessionStorage.removeItem('token');

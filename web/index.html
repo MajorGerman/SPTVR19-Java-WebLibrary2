@@ -15,10 +15,6 @@
     <body>
         <div class="container-fluid">
             
-            <div hidden style="width: 55%;" class="alert alert-info alert-dismissible fade show" data-bs-dismiss="alert" role="alert">
-                <strong id="info"></strong>
-            </div>  
-            
             <nav id="navbar" class="navbar navbar-expand-md navbar-light bg-light">
                 <div class="container-fluid">
                   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
@@ -40,6 +36,28 @@
                   </div>
                 </div>
               </nav>
+                                       
+            <div id="infobox" style="display: none;" style="width: 55%; transition: 0.5s;" class="alert alert-info fade show col-md-4 mb-3 mx-auto my-auto" role="alert">
+                <strong id="info"></strong>
+            </div>  
+            
+            <style>
+                
+                #infobox:hover {
+                    opacity: 0%;
+                }
+            </style>
+            
+            <script>
+                
+                document.getElementById('infobox').addEventListener('mouseover', close);
+                function close() {
+                    if (document.getElementById('infobox').style.display == 'block') {
+                        setTimeout(function() {document.getElementById('infobox').style.display = 'none';}, 500)                       
+                    }
+                }
+            </script>
+                        
             
             <div id="context"></div>
              

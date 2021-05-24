@@ -51,6 +51,7 @@ class UserModule{
       </div>`;
 
       document.getElementById('info').innerHTML='';
+      document.getElementById('infobox').style.display = 'none';
       document.getElementById('btnRegistration').addEventListener('click', userModule.createUser); 
     }
     
@@ -93,7 +94,9 @@ class UserModule{
             var result = await response.json();
             if (response.ok){
               console.log("Request status: "+result.requestStatus);
+              document.getElementById('infobox').style.display = 'block';
             } else {
+              document.getElementById('infobox').style.display = 'none';
               console.log("Ошибка получения данных");
             }
     
@@ -132,9 +135,11 @@ class UserModule{
         var result = await response.json();
         if (response.ok){
           document.getElementById('info').innerHTML = result.info;
+          document.getElementById('infobox').style.display = 'block';
           console.log("Request status: "+result.requestStatus);
           authModule.printLoginForm();
         } else {
+          document.getElementById('infobox').style.display = 'none';
           console.log("Ошибка получения данных");
         }
         

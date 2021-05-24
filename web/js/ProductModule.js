@@ -3,32 +3,36 @@ class ProductModule{
   async printAddProductForm(){
     document.getElementById('context').innerHTML=
     `
+    <form id="form" method="POST" enctype="multipart/form-data">
     <div class='text-center justify-content-center m-2'>
         <h2 class="display-5"> Добавить товар </h2>
-        <div class="mb-3">
+        <div class="col-md-4 mb-3 mx-auto">
             <label for="exampleInputEmail1" class="form-label">Название</label>
             <input name="name" class="form-control" id="name">
         </div>
-        <div class="mb-3">
+        <div class="col-md-4 mb-3 mx-auto">
             <label for="exampleInputEmail1" class="form-label">Цена</label>
             <input name="price" type="number" min="1" class="form-control" id="price">
         </div>
-        <div class="mb-3">
+        <div class="col-md-4 mb-3 mx-auto">
             <label for="exampleInputEmail1" class="form-label">Категория</label>
             <input name="tag" class="form-control" id="tag">
         </div>    
-        <div class="mb-3">
+        <div class="col-md-4 mb-3 mx-auto">
             <label for="exampleInputEmail1" class="form-label">Описание</label>
             <input name="description" class="form-control" id="description">
         </div>    
-        <div class="mb-3">
+        <div class="col-md-4 mb-3 mx-auto">
             <label for="exampleInputEmail1" class="form-label">Обложка</label>
             <input name="file" type="file" class="form-control" id="photo">
         </div>    
         <br>
-        <button id="addButton" type="submit" class="btn btn-primary"> Готово </button>
+        <button id="btn1" type="submit" class="btn btn-primary"> Готово </button>
     </div>
+    </form>
     `;
+    
+    document.getElementById('btn1').addEventListener('click', productModule.addProduct); 
   }
   
   async printBuyProductForm() {
@@ -88,6 +92,27 @@ class ProductModule{
           }
 
     
+  }
+  
+  
+  async addProduct() {
+            const response = await fetch('addProductJson',{
+            method: 'POST',
+            body: new FormData(document.getElementById('form')),
+            });
+
+        var result = await response.json();
+            if (response.ok){
+              console.log("Request status: " + result.requestStatus);
+                document.getElementById('info').innerHTML = result.info;
+                document.getElementById('infobox').style.display = 'block';
+                console.log("Request status: "+result.requestStatus);
+                document.getElementById('context').innerHTML='';
+                productModule.printBuyProductForm();
+            } else {
+              console.log("Ошибка получения данных");
+              document.getElementById('infobox').style.display = 'none';
+            }
   }
   
   
