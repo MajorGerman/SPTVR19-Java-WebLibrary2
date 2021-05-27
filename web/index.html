@@ -25,7 +25,6 @@
                       <a class="nav-link" id="editProductForm" href="#editProductForm1" ${managerhidden}hidden>  Изменить товар  </a>
                       <a class="nav-link" id="discountForm" href=#discountForm" ${managerhidden}hidden>  Сделать распродажу  </a>
                       <a class="nav-link" id="listPersons" href="#listPersons" ${adminhidden}hidden>  Список покупателей  </a> 
-                      <a class="nav-link" id="editPersonForm" href="#editPersonForm1" ${userhidden}hidden>  Изменить данные пользователя  </a>
                       <a class="nav-link" id="showProfile" href="#showProfile" ${userhidden}hidden>  Профиль  </a>       
                       
                       <a class="nav-link" id="loginForm" href="#showLoginForm" ${hiddenlogin}> Войти </a>
@@ -37,7 +36,7 @@
                 </div>
               </nav>
                                        
-            <div id="infobox" style="display: none;" style="width: 55%; transition: 0.5s;" class="alert alert-info fade show col-md-4 mb-3 mx-auto my-auto" role="alert">
+            <div id="infobox" style="display: none; width: 55%; transition: 0.5s; z-index: 50; text-align: center" class="alert alert-info justify-content-md-center mx-auto fade show col-md-4 m-3" role="alert">
                 <strong id="info"></strong>
             </div>  
             
@@ -59,13 +58,15 @@
             </script>
                         
             
-            <div id="context"></div>
+            <div id="context" style="min-height: 100%"></div>
              
         </div>
     </body>
     
-    <footer class="mt-5 py-1 text-center fixed-bottom">
-        <h5 style='font-size: 16px;'>IVKHK 2021 Sillamäe</h5>
-    </footer>
+    <footer class="footer py-2 bg-light text-center">
+        <div class="container">
+          <span class="text-muted">IVKHK 2021</span>
+        </div>
+      </footer>
     
 </html>

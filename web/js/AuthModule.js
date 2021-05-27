@@ -12,12 +12,12 @@ class AuthModule{
             <h2 class="display-5"> Авторизация </h2>
             <br>
             <div class="row">
-                <div class="col-md-4 mb-3 mx-auto">
+                <div class="col-md-3 mb-3 mx-auto">
                     <input placeholder="Логин" name="login" type="text" class="form-control" id="login">
                 </div>
             </div>
             <div class="row mx-auto">
-                <div class="col-md-4 mb-3 mx-auto">
+                <div class="col-md-3 mb-3 mx-auto">
                     <input placeholder="Пароль" name="password" type="password" class="form-control" id="password">
                 </div>
             </div>
@@ -105,7 +105,6 @@ class AuthModule{
         document.getElementById("editProductForm").style.display = 'none';
         document.getElementById("discountForm").style.display = 'none';
         document.getElementById("listPersons").style.display = 'none';
-        document.getElementById("editPersonForm").style.display = 'none';
         document.getElementById("showProfile").style.display = 'none';
         
       }else if(role==="customer"){
@@ -117,7 +116,6 @@ class AuthModule{
         document.getElementById("editProductForm").style.display = 'none';
         document.getElementById("discountForm").style.display = 'none';
         document.getElementById("listPersons").style.display = 'none';
-        document.getElementById("editPersonForm").style.display = 'block';
         document.getElementById("showProfile").style.display = 'block';
         
       }else if(role === "manager"){
@@ -129,7 +127,6 @@ class AuthModule{
         document.getElementById("editProductForm").style.display = 'block';
         document.getElementById("discountForm").style.display = 'block';
         document.getElementById("listPersons").style.display = 'none';
-        document.getElementById("editPersonForm").style.display = 'block';
         document.getElementById("showProfile").style.display = 'block';
         
       }else if(role === "admin"){
@@ -141,7 +138,6 @@ class AuthModule{
         document.getElementById("editProductForm").style.display = 'block';
         document.getElementById("discountForm").style.display = 'block';
         document.getElementById("listPersons").style.display = 'block';
-        document.getElementById("editPersonForm").style.display = 'block';
         document.getElementById("showProfile").style.display = 'block';
       }
     

@@ -1,7 +1,12 @@
 package jsonservlets;
 
+import entity.CoverFacade;
+import entity.History;
+import entity.HistoryFacade;
 import entity.Person;
 import entity.PersonFacade;
+import entity.Product;
+import entity.ProductFacade;
 import entity.Role;
 import entity.User;
 import entity.UserFacade;
@@ -9,6 +14,11 @@ import entity.UserRoles;
 import entity.UserRolesFacade;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.json.Json;
@@ -21,6 +31,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import servlets.LoginServlet;
 import tools.EncryptPassword;
 
 @WebServlet(name = "UserServletJson", urlPatterns = {
@@ -31,6 +42,9 @@ public class UserServletJson extends HttpServlet {
     @EJB UserFacade userFacade;
     @EJB PersonFacade personFacade;
     @EJB UserRolesFacade userRolesFacade;
+    @EJB CoverFacade coverFacade;
+    @EJB ProductFacade productFacade;
+    @EJB HistoryFacade historyFacade;
     
     @Inject EncryptPassword encryptPassword;
     
@@ -72,16 +86,91 @@ public class UserServletJson extends HttpServlet {
 
                 job = Json.createObjectBuilder();
                 
-                json = job.add("requestStatus", "true")
-                        .add("name", user.getPerson().getName())
-                        .add("surname", user.getPerson().getSurname())
-                        .add("money", user.getPerson().getMoney())
-                        .add("phone", user.getPerson().getPhone())
-                        .add("login", user.getLogin())
-                        .build()
-                        .toString();
-  
+                try {
+                    String coverpath = user.getCover().getPath();
+                
+                    json = job.add("requestStatus", "true")
+                            .add("name", user.getPerson().getName())
+                            .add("surname", user.getPerson().getSurname())
+                            .add("money", user.getPerson().getMoney())
+                            .add("phone", user.getPerson().getPhone())
+                            .add("login", user.getLogin())
+                            .add("coverpath", coverpath)
+                            .build()
+                            .toString();
+                
+                } catch (Exception e) {
+                    
+                    json = job.add("requestStatus", "true")
+                            .add("name", user.getPerson().getName())
+                            .add("surname", user.getPerson().getSurname())
+                            .add("money", user.getPerson().getMoney())
+                            .add("phone", user.getPerson().getPhone())
+                            .add("login", user.getLogin())
+                            .add("coverpath", coverFacade.find(new Long(1)).getPath())
+                            .build()
+                            .toString();
+                                    
+                }
                 break;
+                
+            case "/buyProductJson":              
+                job = Json.createObjectBuilder();
+                
+                user = (User)session.getAttribute("user");
+                String personId = user.getPerson().getId().toString();
+                Person pers;
+                pers = personFacade.find(Long.parseLong(personId));
+                
+                jsonReader = Json.createReader(request.getReader());
+                JsonObject jsonObject = jsonReader.readObject();
+                
+                String productId = jsonObject.getString("productId","");
+                Product product = productFacade.find(Long.parseLong(productId));
+                
+                int buy_count = Integer.parseInt(jsonObject.getString("buy_count",""));
+                
+                List<Product> listProductsOr = productFacade.findAll();
+                List<Product> listProducts;
+                
+                if (pers.getMoney() < product.getPrice()) {
+                    json=job.add("requestStatus", "false")
+                        .add("info", "У пользователя недостаточно денег!")
+                        .build()
+                       .toString();
+                    break;   
+                }
+                
+                if (buy_count > product.getCount()) {
+                    json=job.add("requestStatus", "false")
+                        .add("info", "!")
+                        .build()
+                       .toString();
+                    break;                       
+                } else {
+                    product.setCount(product.getCount() - buy_count);               
+                }
+                
+                if (product.getCount() == 0) {
+                    product.setAccess(false);
+                }
+               
+                pers.setMoney(pers.getMoney() - product.getPrice());
+                pers.getListProducts().add(product);
+                personFacade.edit(pers);
+                userFacade.edit(user);
+                user = userFacade.findByLogin(user.getLogin());
+                session.setAttribute("user", user);
+                session.setAttribute("upuser", session.getAttribute("user").toString()); 
+
+                History history = new History(product, pers, new GregorianCalendar().getTime(), null);
+                historyFacade.create(history);
+                productFacade.edit(product);
+                 json=job.add("requestStatus", "true")
+                        .add("info", "Товар успешно куплен! ( " + product.getName() + " x" + buy_count + " )")
+                        .build()
+                       .toString();
+                break;                
         }
         if(json != null && !"".equals(json)) {                    
             try (PrintWriter out = response.getWriter()) {

@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
@@ -36,7 +37,8 @@ import servlets.LoginServlet;
 
 @MultipartConfig()
 @WebServlet(name = "ManagerServletJson", urlPatterns = {
-    "/addProductJson"
+    "/addProductJson",
+    "/printEditProductFormJson"
 
 })
 public class ManagerServletJson extends HttpServlet {
@@ -87,13 +89,14 @@ public class ManagerServletJson extends HttpServlet {
 
     
         
-         switch (path) {
+        switch (path) {
             case "/addProductJson":
                 JsonObjectBuilder job = Json.createObjectBuilder();
                          
                 String name = request.getParameter("name");
                 String price = request.getParameter("price");
                 String tag = request.getParameter("tag");
+                int count = Integer.parseInt(request.getParameter("count"));
                 
                 String description = request.getParameter("description");
 
@@ -110,8 +113,123 @@ public class ManagerServletJson extends HttpServlet {
                 imagesExtension.add("gif");
                 
                 String fileFolder = "";
-                Product product = null;
                 Cover cover = null;
+                
+                for(Part filePart : fileParts){
+                    String fileName = getFileName(filePart);
+                    String fileExtension = fileName.substring(fileName.length()-3, fileName.length());
+
+                    fileFolder = "images";
+
+                    StringBuilder sbFullPathToFile = new StringBuilder();
+
+                    sbFullPathToFile.append(uploadFolder)
+                            .append(File.separator)
+                            .append(fileFolder)
+                            .append(File.separator)
+                            .append(fileName);
+                    File file = new File(sbFullPathToFile.toString());
+                    file.mkdirs();
+                    try(InputStream fileContent = filePart.getInputStream()){
+                        Files.copy(fileContent, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    }
+
+                    cover = new Cover(description,sbFullPathToFile.toString());
+                    coverFacade.create(cover);
+                    
+                }
+                ////
+                
+                if(cover == null || description == null){
+                    json = job.add("requestStatus", "false")
+                        .add("info", "Выберите файл обложки и описание!")
+                        .build()
+                        .toString();
+                    break;   
+                }
+                
+                if(name == null || "".equals(name)
+                  || price == null || Integer.parseInt(price) < 1
+                  || tag == null ){
+                    json=job.add("requestStatus", "false")
+                        .add("info", "Заполните все поля!")
+                        .build()
+                       .toString();
+
+                    break;   
+                }
+                
+                Product product = null;
+                product = new Product(name, Integer.parseInt(price), cover, count);
+                List<String> tags = new ArrayList<>();
+                tags.add(tag);
+                product.setTags(tags);
+                productFacade.create(product);
+                
+                JsonProductBuilder jbb = new JsonProductBuilder();
+                JsonObject jsonProduct = jbb.createJsonProduct(product);
+                
+                json=job.add("requestStatus", "true")
+                    .add("info", "Добавлен товар \'" + product.getName()+"\'.")
+                    .add("book", jsonProduct.toString())
+                    .build()
+                    .toString();
+                response.setContentType("application/json"); 
+                break;
+                
+            case "/printEditProductFormJson":
+                job = Json.createObjectBuilder();
+                
+                List<Product> listProductsOr = productFacade.findAll();
+                List<Product> listProducts = new ArrayList<>();
+                if (listProductsOr.size() > 0) {
+                    for (int i = 0; i < listProductsOr.size(); i++) {
+                        if (listProductsOr.get(i).isAccess() == true) {
+                            listProducts.add(listProductsOr.get(i));
+                        }
+                    }
+                }
+                
+                if (listProducts.isEmpty()) {
+                    json = job.add("requestStatus", "false")
+                        .add("info", "Товаров сейчас нет!")
+                        .build()
+                        .toString();      
+                    break;
+                }
+                
+                JsonArrayBuilder jab = Json.createArrayBuilder();
+                listProducts.forEach((prod) -> {
+                    jab.add(new JsonProductBuilder().createJsonProduct(prod));
+                });
+                json = jab.build().toString();
+                break;  
+            
+            case "/editProductJson":
+                job = Json.createObjectBuilder();
+                
+                String id = request.getParameter("productId");
+
+                name = request.getParameter("name");
+                price = request.getParameter("price");
+                tag = request.getParameter("tag");
+                
+                description = request.getParameter("description");
+
+                ////
+                fileParts = request
+                        .getParts()
+                        .stream()
+                        .filter(part -> "file".equals(part.getName()))
+                        .collect(Collectors.toList()
+                );
+                 imagesExtension = new HashSet<>();
+                imagesExtension.add("jpg");
+                imagesExtension.add("png");
+                imagesExtension.add("gif");
+                
+                fileFolder = "";
+                cover = null;
                 
                 for(Part filePart : fileParts){
                     String fileName = getFileName(filePart);
@@ -157,23 +275,47 @@ public class ManagerServletJson extends HttpServlet {
                     break;   
                 }
                 
-                product = new Product(name, Integer.parseInt(price), cover);
-                List<String> tags = new ArrayList<>();
+                product = null;
+                product = productFacade.find(Integer.parseInt(id));
+                
+                tags = new ArrayList<>();
                 tags.add(tag);
                 product.setTags(tags);
-                productFacade.create(product);
                 
-                JsonProductBuilder jbb = new JsonProductBuilder();
-                JsonObject jsonBook = jbb.createJsonProduct(product);
+                product.setName(name);
+                product.setPrice(Integer.parseInt(price));
+                cover.setDescription(description);
+                product.setCover(cover);
+                
+                productFacade.edit(product);
+                
+                jbb = new JsonProductBuilder();
+                jsonProduct = jbb.createJsonProduct(product);
                 
                 json=job.add("requestStatus", "true")
-                    .add("info", "Добавлена книга \'" + product.getName()+"\'.")
-                    .add("book", jsonBook.toString())
+                    .add("info", "Изменен товар \'" + product.getName()+ "\'.")
+                    .add("product", jsonProduct.toString())
+                    .build()
+                    .toString();
+                response.setContentType("application/json"); 
+                break;    
+                
+            case "deleteProductJson":               
+                job = Json.createObjectBuilder();              
+                id = request.getParameter("productId");    
+                
+                product = productFacade.find(Integer.parseInt(id));
+                
+                product.setAccess(false);
+                
+                productFacade.edit(product)
+                        ;
+                json=job.add("requestStatus", "true")
+                    .add("info", "Удалён товар \'" + product.getName()+ "\'.")
                     .build()
                     .toString();
                 response.setContentType("application/json"); 
                 break;
-                
         }
         
         if(json != null && !"".equals(json)) {                    

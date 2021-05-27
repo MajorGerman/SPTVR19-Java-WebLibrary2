@@ -2,6 +2,12 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,12 +15,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
-/**
- *
- * @author Melnikov
- */
 @Entity
 public class User implements Serializable{
+   
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,12 +27,19 @@ public class User implements Serializable{
     @OneToOne
     private Person person;
     private String salt;
+    private Cover cover;
     
-    
-
     public User() {
     }
-
+    
+    public User(String login, String password, String salt, Person person, Cover cover) {
+        this.login = login;
+        this.password = password;
+        this.salt = salt;
+        this.person = person;
+        this.cover = cover;
+    }
+    
     public User(String login, String password, String salt, Person person) {
         this.login = login;
         this.password = password;
@@ -121,5 +131,14 @@ public class User implements Serializable{
     public void setSalt(String salt) {
         this.salt = salt;
     }
+
+    public Cover getCover() {
+        return cover;
+    }
+
+    public void setCover(Cover cover) {
+        this.cover = cover;
+    }
+ 
     
 }

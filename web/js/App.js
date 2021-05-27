@@ -12,6 +12,7 @@ document.getElementById("addProductForm").onclick = function (){
 };
 document.getElementById("editProductForm").onclick = function (){
     toogleMenuActive("editProductForm");
+    productModule.printEditProductForm();
 };
 document.getElementById("discountForm").onclick = function (){
     toogleMenuActive("discountForm");

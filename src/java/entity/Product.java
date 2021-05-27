@@ -26,6 +26,7 @@ public class Product implements Serializable{
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date discountDate;
     private int discountDuration;
+    private int count;
 
     public Cover getCover() {
         return cover;
@@ -35,7 +36,7 @@ public class Product implements Serializable{
         this.cover = cover;
     }
 
-    public Product(String name, int price, Cover cover) {
+    public Product(String name, int price, Cover cover, int count) {
         this.name = name;
         this.price = price;
         this.access = true;
@@ -146,8 +147,14 @@ public class Product implements Serializable{
     public void setDiscountDuration(int discountDuration) {
         this.discountDuration = discountDuration;
     }
-    
-    
-    
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+   
     
 }

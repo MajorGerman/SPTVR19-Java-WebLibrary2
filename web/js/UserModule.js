@@ -57,32 +57,44 @@ class UserModule{
     
     async showProfile(){
         document.getElementById('context').innerHTML=
-           `<div class="text-center justify-content-md-center m-auto">  
+           `<div class="row text-center m-2">     
                 <h2 class="display-5"> Профиль </h2> 
-                <div class="col-md mb-3 mx-auto"></div>
-                <div class="col-md-4 justify-content-md-center mx-auto ml-5">
-                    <ul class="list-group list-group-horizontal">            
-                        <li class="list-group-item disabled">Логин</li>
-                        <li id='login' class="list-group-item "></li>
-                    </ul>
-                    <ul class="list-group list-group-horizontal">            
-                        <li class="list-group-item disabled">Деньги</li>
-                        <li id='money' class="list-group-item"></li>
-                    </ul>
-                    <ul class="list-group list-group-horizontal">            
-                        <li class="list-group-item disabled">Имя</li>
-                        <li id='name' class="list-group-item "></li>
-                    </ul>
-                    <ul class="list-group list-group-horizontal">            
-                        <li class="list-group-item disabled">Фамилия</li>
-                        <li id='surname' class="list-group-item"></li>
-                    </ul>
-                    <ul class="list-group list-group-horizontal">            
-                        <li class="list-group-item disabled">Телефон</li>
-                        <li id='phone' class="list-group-item "></li>
-                    </ul>
+                <div class="col-md">
+                    <div class="text-center mx-auto">
+                      <img id="avatar" src="" class="rounded" alt="Аватар">
+                    </div>                
+                </div>
+            </div>
+            <div class="row text-center">    
+                <div class="col-md text-center d-flex justify-content-center">
+                    <div class="text-center justify-content-center">
+                        <ul class="list-group list-group-horizontal">            
+                            <li class="list-group-item disabled">Логин</li>
+                            <li id='login' class="list-group-item "></li>
+                        </ul>
+                        <ul class="list-group list-group-horizontal">            
+                            <li class="list-group-item disabled">Деньги</li>
+                            <li id='money' class="list-group-item"></li>
+                        </ul>
+                        <ul class="list-group list-group-horizontal">            
+                            <li class="list-group-item disabled">Имя</li>
+                            <li id='name' class="list-group-item "></li>
+                        </ul>
+                        <ul class="list-group list-group-horizontal">            
+                            <li class="list-group-item disabled">Фамилия</li>
+                            <li id='surname' class="list-group-item"></li>
+                        </ul>
+                        <ul class="list-group list-group-horizontal">            
+                            <li class="list-group-item disabled">Телефон</li>
+                            <li id='phone' class="list-group-item "></li>
+                        </ul>
+                    </div>
                 </div> 
-                <div class="col-md-auto mb-3 mx-auto"></div>
+            </div>
+            <div class="row text-center">
+                <div class="col-md m-2">
+                    <button id="btn1" type="button" class="btn btn-primary mb-2"> Изменить данные </button>
+                </div>
             </div>`;
     
             const response = await fetch('showProfileJson',{
@@ -94,7 +106,6 @@ class UserModule{
             var result = await response.json();
             if (response.ok){
               console.log("Request status: "+result.requestStatus);
-              document.getElementById('infobox').style.display = 'block';
             } else {
               document.getElementById('infobox').style.display = 'none';
               console.log("Ошибка получения данных");
@@ -105,6 +116,7 @@ class UserModule{
             document.getElementById('login').innerHTML = result.login;
             document.getElementById('phone').innerHTML = result.phone;
             document.getElementById('money').innerHTML = result.money + '$';
+            document.getElementById('avatar').src = "insertFile/" + result.coverpath;
     
     }
 

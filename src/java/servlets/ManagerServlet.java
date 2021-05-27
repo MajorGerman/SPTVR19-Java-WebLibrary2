@@ -128,7 +128,7 @@ public class ManagerServlet extends HttpServlet {
                     request.getRequestDispatcher(LoginServlet.pathToJsp.getString("addProductForm")).forward(request, response);
                     break;                     
                 }
-                Product product = new Product(name, Integer.parseInt(price), cover);
+                Product product = new Product(name, Integer.parseInt(price), cover, 1);
                 List<String> tags = new ArrayList<>();
                 tags.add(tag);
                 product.setTags(tags);

@@ -1,5 +1,6 @@
+
 .list-group-item {
-    min-width: 200px;
+    min-width: 190px;
 }
 
 .list-group {
@@ -13,4 +14,12 @@
 .nav-link:hover {
     /*transform: scale(1.05);*/
     background-color: #e4e4e4;
+}
+
+#context {
+    margin-bottom: 50px;
+}
+
+#avatar {
+    width: 375px;
 }

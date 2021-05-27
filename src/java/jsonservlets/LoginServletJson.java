@@ -5,6 +5,7 @@
  */
 package jsonservlets;
 
+import entity.CoverFacade;
 import entity.Person;
 import entity.User;
 import java.io.IOException;
@@ -52,6 +53,7 @@ public class LoginServletJson extends HttpServlet {
     @EJB UserRolesFacade userRolesFacade;
     @EJB ProductFacade productFacade;
     @EJB RoleFacade roleFacade;
+    @EJB CoverFacade coverFacade;
     
     @Inject EncryptPassword encryptPassword;
     /**
