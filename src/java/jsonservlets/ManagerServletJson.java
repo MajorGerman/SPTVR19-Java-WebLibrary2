@@ -38,7 +38,9 @@ import servlets.LoginServlet;
 @MultipartConfig()
 @WebServlet(name = "ManagerServletJson", urlPatterns = {
     "/addProductJson",
-    "/printEditProductFormJson"
+    "/printEditProductFormJson",
+    "/editProductJson",
+    "/deleteProductJson"
 
 })
 public class ManagerServletJson extends HttpServlet {
@@ -67,36 +69,42 @@ public class ManagerServletJson extends HttpServlet {
         String path = request.getServletPath();
         String uploadFolder = ManagerServletJson.pathToFile.getString("dir");
         
+        JsonObjectBuilder job = Json.createObjectBuilder();
+        
         HttpSession session = request.getSession(false);
-//        if (session == null) {
-//            json = job.add("requestStatus", "false")
-//                      .add("info", "У вас нет прав! Войдите в систему!")
-//                        .build()
-//                        .toString();
-//            return;          
-//        }
-//        User user = (User)session.getAttribute("user");
-//        if (user == null) {
-//            request.setAttribute("info","У вас нет прав! Войдите в систему!");
-//            
-//            return;                     
-//        }
-//        if (!userRolesFacade.isRole("manager", user)) {
-//            request.setAttribute("info","У вас нет прав! Войдите в систему!");
-//            request.getRequestDispatcher("/loginForm").forward(request, response);
-//            return;                     
-//        }
+        
+        if (session == null) {
+            json = job.add("requestStatus", "false")
+                .add("info", "У вас недостаточно прав! Войдите в систему!")
+                .build()
+                .toString();  
+            return;          
+        }
+        User user = (User)session.getAttribute("user");
+        if (user == null) {
+            json = job.add("requestStatus", "false")
+                .add("info", "У вас недостаточно прав! Войдите в систему!")
+                .build()
+                .toString();  
+            return;                     
+        }
+        boolean isRole = userRolesFacade.isRole("manager", user);
+        if (!isRole) {
+            json = job.add("requestStatus", "false")
+                .add("info", "У вас недостаточно прав! Войдите в систему!")
+                .build()
+                .toString();  
+            return;               
+        }
 
     
         
-        switch (path) {
-            case "/addProductJson":
-                JsonObjectBuilder job = Json.createObjectBuilder();
-                         
+            switch (path) {
+            case "/addProductJson":                        
                 String name = request.getParameter("name");
                 String price = request.getParameter("price");
                 String tag = request.getParameter("tag");
-                int count = Integer.parseInt(request.getParameter("count"));
+                String count = request.getParameter("count");
                 
                 String description = request.getParameter("description");
 
@@ -160,7 +168,8 @@ public class ManagerServletJson extends HttpServlet {
                 }
                 
                 Product product = null;
-                product = new Product(name, Integer.parseInt(price), cover, count);
+                product = new Product(name, Integer.parseInt(price), cover, Integer.parseInt(count));
+
                 List<String> tags = new ArrayList<>();
                 tags.add(tag);
                 product.setTags(tags);
@@ -171,7 +180,7 @@ public class ManagerServletJson extends HttpServlet {
                 
                 json=job.add("requestStatus", "true")
                     .add("info", "Добавлен товар \'" + product.getName()+"\'.")
-                    .add("book", jsonProduct.toString())
+                    .add("product", jsonProduct.toString())
                     .build()
                     .toString();
                 response.setContentType("application/json"); 
@@ -214,6 +223,8 @@ public class ManagerServletJson extends HttpServlet {
                 price = request.getParameter("price");
                 tag = request.getParameter("tag");
                 
+                count = request.getParameter("count");
+                
                 description = request.getParameter("description");
 
                 ////
@@ -250,7 +261,7 @@ public class ManagerServletJson extends HttpServlet {
                         Files.copy(fileContent, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     }
 
-                    cover = new Cover(fileName,sbFullPathToFile.toString());
+                    cover = new Cover(description, sbFullPathToFile.toString());
                     coverFacade.create(cover);
                     
                 }
@@ -276,46 +287,54 @@ public class ManagerServletJson extends HttpServlet {
                 }
                 
                 product = null;
-                product = productFacade.find(Integer.parseInt(id));
+                product = productFacade.find(Long.parseLong(id));
                 
-                tags = new ArrayList<>();
-                tags.add(tag);
-                product.setTags(tags);
+                if (product != null){
                 
-                product.setName(name);
-                product.setPrice(Integer.parseInt(price));
-                cover.setDescription(description);
-                product.setCover(cover);
+                    tags = new ArrayList<>();
+                    tags.add(tag);
+                    product.setTags(tags);
+
+                    product.setName(name);
+                    product.setPrice(Integer.parseInt(price));
+                    cover.setDescription(description);
+                    product.setCover(cover);
+                    product.setCount(Integer.parseInt(count));
+
+                    productFacade.edit(product);
+
+                    jbb = new JsonProductBuilder();
+                    jsonProduct = jbb.createJsonProduct(product);
+
+                    json=job.add("requestStatus", "true")
+                        .add("info", "Изменен товар \'" + product.getName()+ "\'.")
+                        .add("product", jsonProduct.toString())
+                        .build()
+                        .toString();
+                    response.setContentType("application/json"); 
+                    break;    
+                }
                 
-                productFacade.edit(product);
-                
-                jbb = new JsonProductBuilder();
-                jsonProduct = jbb.createJsonProduct(product);
-                
-                json=job.add("requestStatus", "true")
-                    .add("info", "Изменен товар \'" + product.getName()+ "\'.")
-                    .add("product", jsonProduct.toString())
-                    .build()
-                    .toString();
-                response.setContentType("application/json"); 
-                break;    
-                
-            case "deleteProductJson":               
+            case "/deleteProductJson":               
                 job = Json.createObjectBuilder();              
                 id = request.getParameter("productId");    
                 
-                product = productFacade.find(Integer.parseInt(id));
+                product = productFacade.find(Long.parseLong(id));
                 
-                product.setAccess(false);
+                if (product != null) {
+                    product.setAccess(false);
                 
-                productFacade.edit(product)
-                        ;
-                json=job.add("requestStatus", "true")
-                    .add("info", "Удалён товар \'" + product.getName()+ "\'.")
-                    .build()
-                    .toString();
-                response.setContentType("application/json"); 
-                break;
+                    productFacade.edit(product);
+                    
+                    json=job.add("requestStatus", "true")
+                        .add("info", "Удалён товар \'" + product.getName()+ "\'.")
+                        .build()
+                        .toString();
+                    
+                    response.setContentType("application/json"); 
+                    break;
+                }
+
         }
         
         if(json != null && !"".equals(json)) {                    

@@ -61,27 +61,33 @@ public class UserServletJson extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
+        
         String json = "";
         String path = request.getServletPath();
+        JsonReader jsonReader = Json.createReader(request.getReader());
+        JsonObjectBuilder job = Json.createObjectBuilder();
         
         HttpSession session = request.getSession(false);
         if (session == null) {
-            request.setAttribute("info","У вас нет прав! Войдите в систему!");
-            request.getRequestDispatcher("/loginForm").forward(request, response);
+            json = job.add("requestStatus", "false")
+                .add("info", "У вас недостаточно прав! Войдите в систему!")
+                .build()
+                .toString();  
             return;          
         }
         User user = (User)session.getAttribute("user");
         if (user == null) {
-            request.setAttribute("info","У вас нет прав! Войдите в систему!");
-            request.getRequestDispatcher("/loginForm").forward(request, response);
+            json = job.add("requestStatus", "false")
+                .add("info", "У вас недостаточно прав! Войдите в систему!")
+                .build()
+                .toString();  
             return;                     
         }
+        boolean isRole = userRolesFacade.isRole("admin", user);
+       
         
         switch (path) {
             case "/showProfileJson":
-                JsonReader jsonReader = Json.createReader(request.getReader());
-                JsonObjectBuilder job = Json.createObjectBuilder();
-                                     
                 user = (User)session.getAttribute("user");
 
                 job = Json.createObjectBuilder();
@@ -122,10 +128,9 @@ public class UserServletJson extends HttpServlet {
                 Person pers;
                 pers = personFacade.find(Long.parseLong(personId));
                 
-                jsonReader = Json.createReader(request.getReader());
                 JsonObject jsonObject = jsonReader.readObject();
                 
-                String productId = jsonObject.getString("productId","");
+                String productId = jsonObject.getString("productId", "");
                 Product product = productFacade.find(Long.parseLong(productId));
                 
                 int buy_count = Integer.parseInt(jsonObject.getString("buy_count",""));
@@ -143,7 +148,7 @@ public class UserServletJson extends HttpServlet {
                 
                 if (buy_count > product.getCount()) {
                     json=job.add("requestStatus", "false")
-                        .add("info", "!")
+                        .add("info", "На складе нет столько товаров!")
                         .build()
                        .toString();
                     break;                       
@@ -155,8 +160,7 @@ public class UserServletJson extends HttpServlet {
                     product.setAccess(false);
                 }
                
-                pers.setMoney(pers.getMoney() - product.getPrice());
-                pers.getListProducts().add(product);
+                pers.setMoney(pers.getMoney() - product.getPrice()*buy_count);
                 personFacade.edit(pers);
                 userFacade.edit(user);
                 user = userFacade.findByLogin(user.getLogin());

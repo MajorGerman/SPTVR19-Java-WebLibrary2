@@ -12,25 +12,25 @@
         <script type="module" src="js/App.js"></script>
     </head>
     
-    <body>
+    <body id="body">
         <div class="container-fluid">
             
             <nav id="navbar" class="navbar navbar-expand-md navbar-light bg-light">
                 <div class="container-fluid">
                   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                    <div class="navbar-nav">
-                        
+                    <div class="navbar-nav mx-auto">                     
+                      <a class="nav-link" id="printIndex" href="#printIndex">Главная</a>
                       <a class="nav-link" id="buyProductForm" href="#buyProductForm">Каталог</a>
                       <a class="nav-link" id='addProductForm'  href="#addProductForm" ${managerhidden}hidden>  Добавить товар  </a>
                       <a class="nav-link" id="editProductForm" href="#editProductForm1" ${managerhidden}hidden>  Изменить товар  </a>
                       <a class="nav-link" id="discountForm" href=#discountForm" ${managerhidden}hidden>  Сделать распродажу  </a>
-                      <a class="nav-link" id="listPersons" href="#listPersons" ${adminhidden}hidden>  Список покупателей  </a> 
-                      <a class="nav-link" id="showProfile" href="#showProfile" ${userhidden}hidden>  Профиль  </a>       
+                      <a class="nav-link" id="listPersons" href="#listPersons" ${adminhidden}hidden>  Список покупателей  </a>  
                       
+                      <br>
+                      <a class="nav-link" id="showProfile" href="#showProfile" ${userhidden}hidden>  Профиль  </a>                             
                       <a class="nav-link" id="loginForm" href="#showLoginForm" ${hiddenlogin}> Войти </a>
                       <a class="nav-link" id="logout" href="#logout" ${hiddenlogout}hidden> Выйти </a>  
                       <a class="nav-link" id="regForm" href="#addPersonForm" ${hiddenreg}> Регистрация </a> 
-                      
                     </div>
                   </div>
                 </div>

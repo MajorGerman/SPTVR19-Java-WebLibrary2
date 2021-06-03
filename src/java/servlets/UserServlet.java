@@ -188,7 +188,7 @@ public class UserServlet extends HttpServlet {
                     break; 
                 }
                 pers.setMoney(pers.getMoney() - product.getPrice());
-                pers.getListProducts().add(product);
+                //pers.getListProducts().add(product);
                 personFacade.edit(pers);
                 userFacade.edit(user);
                 user = userFacade.findByLogin(user.getLogin());

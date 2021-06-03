@@ -2,6 +2,10 @@ import {authModule} from './AuthModule.js';
 import {userModule} from './UserModule.js';
 import {productModule} from './ProductModule.js';
 
+document.getElementById("printIndex").onclick = function (){
+    toogleMenuActive("printIndex");
+    authModule.printIndex();
+};
 document.getElementById("buyProductForm").onclick = function (){
     toogleMenuActive("buyProductForm");
     productModule.printBuyProductForm();
@@ -19,6 +23,7 @@ document.getElementById("discountForm").onclick = function (){
 };
 document.getElementById("listPersons").onclick = function (){
     toogleMenuActive("listPersons");
+    userModule.listPersons();
 };
 document.getElementById("showProfile").onclick = function (){
     toogleMenuActive("showProfile");
@@ -38,6 +43,10 @@ document.getElementById("logout").onclick = function (){
 };
 
 authModule.toogleMenu();
+document.getElementById("body").onload = function() {
+    authModule.printIndex();
+};
+
 
 
 function toogleMenuActive(elementId){

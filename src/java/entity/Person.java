@@ -17,8 +17,6 @@ public class Person implements Serializable {
     private String surname;
     private String phone;
     private int money;
-    private List<Product> listProducts = new ArrayList<>();
-
     
     public Person(String name, String surname, String phone, int money) {
         this.name = name;
@@ -61,23 +59,6 @@ public class Person implements Serializable {
     public void setMoney(int money) {
         this.money = money;
     }
-
-    @Override
-    public String toString() {
-        if (listProducts.size() == 0) {
-            return name + " " + surname + " (" + money + "$)";
-        } else {
-            return name + " " + surname + " (" + money + "$ | " + listProducts + " )";
-        }
-    } 
-
-    public List<Product> getListProducts() {
-        return listProducts;
-    }
-
-    public void setListProducts(List<Product> listProducts) {
-        this.listProducts = listProducts;
-    }  
     
     public Long getId() {
         return id;

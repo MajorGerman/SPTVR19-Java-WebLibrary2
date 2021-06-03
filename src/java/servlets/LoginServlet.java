@@ -97,6 +97,9 @@ public class LoginServlet extends HttpServlet {
         personFacade.create(pers);
         user = new User("customer", password, salt, pers);
         userFacade.create(user);
+        role = roleFacade.findByName("customer");
+        userRoles = new UserRoles(user, role);
+        userRolesFacade.create(userRoles);
         
     }
         

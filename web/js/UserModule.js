@@ -56,7 +56,7 @@ class UserModule{
     }
     
     async showProfile(){
-        document.getElementById('context').innerHTML=
+        document.getElementById('context').innerHTML =
            `<div class="row text-center m-2">     
                 <h2 class="display-5"> Профиль </h2> 
                 <div class="col-md">
@@ -156,6 +156,136 @@ class UserModule{
         }
         
     }
+    
+    async listPersons() {
+        const response = await fetch('listPersonsJson',{
+        method: 'GET',
+        headers: {
+                'Content-Type': 'application/json;charset:utf8'
+                }});
+        var user_ids = [];
+        var result = await response.json();
+        if (response.ok){
+            document.getElementById('context').innerHTML = `
+                <div id="list" class="row text-center">     
+                    <h2 class="display-5"> Список покупателей </h2> 
+                </div>`;  
+           for (let user of result) {
+                document.getElementById('list').innerHTML += `
+                        <div class="col-md mx-auto">
+                            <ul class="list-group text-center mx-auto">
+                            <li class="list-group-item" value="${user.id}">
+                                
+                                <img src="insertFile/${user.coverpath}" style="width: 50px;">
+                                <strong>${user.login}</strong> (${user.money}$)<br>
+                                <p style="color: #909090">${user.name} ${user.surname}
+                                <br>${user.phone}</p>
+                                
+                                <hr>
+                                <form>
+                                <input name="userId" value="${user.id}" hidden>                
+                                <button style="min-width: 200px; margin: 2px;" type="button" class="btn btn-primary" id="btn${user.id}a"> Сделать админом </button>
+                                </form>
+
+                                <form>
+                                <input name="userId" value="${user.id}" hidden>                
+                                <button style="min-width: 200px;margin: 2px;" type="button" class="btn btn-primary" id="btn${user.id}b"> Сделать менеджером </button>
+                                </form>
+
+                                <form>
+                                <input name="userId" value="${user.id}" hidden>                
+                                <button style="min-width: 200px;margin: 2px;" type="button" class="btn btn-danger" id="btn${user.id}c"> Разжаловать </button>
+                                </form>
+                
+                            </li>
+                            </ul>
+                        </div>`;
+                
+                user_ids.push(user.id.toString());
+            }
+            
+            console.log(user_ids)
+            for (let j of user_ids) {
+                console.log(j)
+                document.getElementById('btn' + j + "a").addEventListener('click', () => { userModule.makeAdmin(j) } );
+                document.getElementById('btn' + j + "b").addEventListener('click', () => { userModule.makeManager(j) } );
+                document.getElementById('btn' + j + "c").addEventListener('click', () => { userModule.makeNobody(j) } );
+            }
+        } else {
+          document.getElementById('infobox').style.display = 'none';
+          console.log("Ошибка получения данных");
+        }
+    }
+    
+    async makeAdmin(id) {
+       const user_id = id;
+       const data = {"userId": user_id};
+       const response = await fetch('makeAdminJson',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset:utf8'
+            },
+            body: JSON.stringify(data)
+        });
+        
+        var result = await response.json();
+        if (response.ok){
+            document.getElementById('info').innerHTML = result.info;
+            document.getElementById('infobox').style.display = 'block';
+            console.log("Request status: " + result.requestStatus);
+            userModule.listPersons();      
+        } else {
+           document.getElementById('infobox').style.display = 'none';
+           console.log("Ошибка получения данных");                
+        }     
+    }
+    
+    async makeManager(id) {
+     const user_id = id;
+     const data = {"userId": user_id};
+       const response = await fetch('makeManagerJson',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset:utf8'
+            },
+            body: JSON.stringify(data)
+        });
+        
+        var result = await response.json();
+        if (response.ok){
+            document.getElementById('info').innerHTML = result.info;
+            document.getElementById('infobox').style.display = 'block';
+            console.log("Request status: " + result.requestStatus);
+            userModule.listPersons();            
+        } else {
+           document.getElementById('infobox').style.display = 'none';
+           console.log("Ошибка получения данных");                
+        }     
+    }
+    
+    async makeNobody(id) {
+       const user_id = id;
+       const data = {"userId": user_id};
+       const response = await fetch('makeNobodyJson',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset:utf8'
+            },
+            body: JSON.stringify(data)
+        });
+        
+        var result = await response.json();
+        if (response.ok){
+            document.getElementById('info').innerHTML = result.info;
+            document.getElementById('infobox').style.display = 'block';
+            console.log("Request status: " + result.requestStatus);
+            userModule.listPersons();            
+        } else {
+           document.getElementById('infobox').style.display = 'none';
+           console.log("Ошибка получения данных");                
+        }     
+    }
+    
 }
 const userModule = new UserModule();
 export {userModule};

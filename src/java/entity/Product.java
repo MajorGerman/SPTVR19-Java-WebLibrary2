@@ -19,6 +19,7 @@ public class Product implements Serializable{
     private List<String> tags;
     private String name;
     private int price;
+    private int count;
     @OneToOne
     private Cover cover;
     private boolean access;
@@ -26,7 +27,7 @@ public class Product implements Serializable{
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date discountDate;
     private int discountDuration;
-    private int count;
+
 
     public Cover getCover() {
         return cover;
@@ -41,6 +42,7 @@ public class Product implements Serializable{
         this.price = price;
         this.access = true;
         this.cover = cover;
+        this.count = count;
     }
     
     public Product() {
@@ -60,44 +62,6 @@ public class Product implements Serializable{
 
     public void setPrice(int price) {
         this.price = price;
-    }
-
-    @Override
-    public String toString() {
-        return name + " (" + price + "$)";
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 79 * hash + Objects.hashCode(this.id);
-        hash = 79 * hash + Objects.hashCode(this.name);
-        hash = 79 * hash + this.price;
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Product other = (Product) obj;
-        if (this.price != other.price) {
-            return false;
-        }
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
     }
     
         public Long getId() {
@@ -155,6 +119,73 @@ public class Product implements Serializable{
     public void setCount(int count) {
         this.count = count;
     }
-   
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.id);
+        hash = 79 * hash + Objects.hashCode(this.tags);
+        hash = 79 * hash + Objects.hashCode(this.name);
+        hash = 79 * hash + this.price;
+        hash = 79 * hash + this.count;
+        hash = 79 * hash + Objects.hashCode(this.cover);
+        hash = 79 * hash + (this.access ? 1 : 0);
+        hash = 79 * hash + this.discount;
+        hash = 79 * hash + Objects.hashCode(this.discountDate);
+        hash = 79 * hash + this.discountDuration;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Product other = (Product) obj;
+        if (this.price != other.price) {
+            return false;
+        }
+        if (this.count != other.count) {
+            return false;
+        }
+        if (this.access != other.access) {
+            return false;
+        }
+        if (this.discount != other.discount) {
+            return false;
+        }
+        if (this.discountDuration != other.discountDuration) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.tags, other.tags)) {
+            return false;
+        }
+        if (!Objects.equals(this.cover, other.cover)) {
+            return false;
+        }
+        if (!Objects.equals(this.discountDate, other.discountDate)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" + "id=" + id + ", tags=" + tags + ", name=" + name + ", price=" + price + ", count=" + count + ", cover=" + cover + ", access=" + access + ", discount=" + discount + ", discountDate=" + discountDate + ", discountDuration=" + discountDuration + '}';
+    }
+  
+    
     
 }

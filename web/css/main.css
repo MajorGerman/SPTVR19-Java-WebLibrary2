@@ -1,6 +1,9 @@
+* {
+    border-radius: 4px;
+}
 
 .list-group-item {
-    min-width: 190px;
+    min-width: 185px;
 }
 
 .list-group {
@@ -8,7 +11,7 @@
 }
 
 .nav-link {
-    transition: 0.95s;
+    transition: 1.25s;
 }
 
 .nav-link:hover {
