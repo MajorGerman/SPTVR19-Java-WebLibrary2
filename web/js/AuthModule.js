@@ -92,7 +92,7 @@ class AuthModule{
         document.getElementById('context').innerHTML = `
             <div id='index-body'>  
                 <h2 class="display-5 text-center mx-auto">Добро пожаловать в кухонный магазин Георга Лаабе!</h2>  
-                <h4 class="display-6 text-center mx-auto" style="color: grey;">У нас есть самые крутые товары!</h4> 
+                <h4 id="cool" class="display-6 text-center mx-auto" style="color: grey;">У нас есть самые крутые товары!</h4> 
             </div>
 
             <div class="row justify-content-md-center text-center mx-auto">

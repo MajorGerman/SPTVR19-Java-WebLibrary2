@@ -234,7 +234,7 @@ public class ManagerServletJson extends HttpServlet {
                         .filter(part -> "file".equals(part.getName()))
                         .collect(Collectors.toList()
                 );
-                 imagesExtension = new HashSet<>();
+                imagesExtension = new HashSet<>();
                 imagesExtension.add("jpg");
                 imagesExtension.add("png");
                 imagesExtension.add("gif");

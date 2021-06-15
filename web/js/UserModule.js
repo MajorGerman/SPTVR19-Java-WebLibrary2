@@ -94,9 +94,13 @@ class UserModule{
             <div class="row text-center">
                 <div class="col-md m-2">
                     <button id="btn1" type="button" class="btn btn-primary mb-2"> Изменить данные </button>
+                    <br><button id="btn2" type="button" class="btn btn-danger mb-2"> Уничтожить сайт! </button>                
                 </div>
             </div>`;
     
+            document.getElementById("btn1").addEventListener("click", userModule.printEditPersonForm);
+            document.getElementById("btn2").addEventListener("click", () => {document.getElementById("html").innerHTML = "";} );
+            
             const response = await fetch('showProfileJson',{
                 method: 'GET',
                 headers: {
@@ -118,6 +122,93 @@ class UserModule{
             document.getElementById('money').innerHTML = result.money + '$';
             document.getElementById('avatar').src = "insertFile/" + result.coverpath;
     
+    }
+    
+    async printEditPersonForm() {
+    
+        const response = await fetch('printEditPersonFormJson',{
+            method: 'GET',
+            headers: {'Content-Type': 'application/json;charset:utf8'},});        
+        
+            var result = await response.json();
+                if (response.ok) {
+                    console.log("Request status: " + result.requestStatus);
+                    
+                    document.getElementById("context").innerHTML = `
+                        <div class='text-center justify-content-center'>
+                            <h2 class="display-5"> Изменить данные </h2>
+                            <form id='form3' method="POST" enctype="multipart/form-data"> 
+                                <input type="hidden" id="idforedit"  value="${result.persId}" name="persId">
+                                <div class="mb-3">
+                                    <label for="exampleInputEmail1" class="form-label">Имя</label>
+                                    <input name="name" type="text" class="form-control" id="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="exampleInputEmail1" class="form-label">Фамилия</label>
+                                    <input name="surname" type="text" class="form-control" id="surName" required>
+                                </div>    
+                                <div class="mb-3">
+                                    <label for="exampleInputEmail1" class="form-label">Телефон</label>
+                                    <input name="phone" type="text" class="form-control" id="Phone" required>
+                                </div>    
+                                <div class="mb-3">
+                                    <label for="exampleInputEmail1" class="form-label">Деньги</label>
+                                    <input name="money" min='0' type="number" class="form-control" id="Money" required>
+                                </div> 
+                                <div class="mb-3">
+                                    <label for="exampleInputEmail1" class="form-label">Пароль</label>
+                                    <input name="password" type="password" class="form-control" id="Password" required>
+                                </div> 
+                                <div class="col-md-4 mb-3 mx-auto">
+                                    <label for="exampleInputEmail1" class="form-label">Аватар</label>
+                                    <input name="file" type="file" class="form-control" id="Photo" required>
+                                </div>   
+                                <button type="submit" id="btn1" class="btn btn-primary"> Готово </button>
+                            </form>
+                        </div>`;
+                    
+                } else {
+                    document.getElementById('infobox').style.display = 'none';
+                    console.log("Ошибка получения данных");
+                }      
+                
+                document.getElementById("name").value = result.name;
+                document.getElementById("surName").value = result.surname;
+                document.getElementById("Money").value = result.money;
+                document.getElementById("Phone").value = result.phone;
+                
+                document.getElementById("btn1").addEventListener("click", userModule.editPerson);
+    }
+    
+    async editPerson() {
+        let form = new FormData(document.getElementById('form3'));
+        form.append("persId", document.getElementById("idforedit").value);
+        form.append("surname", document.getElementById("surName").value);
+        form.append("money", document.getElementById("Money").value);
+        form.append("phone", document.getElementById("Phone").value);
+        form.append("password", document.getElementById("Password").value);
+        let files = document.getElementById("Photo").files
+        console.log(files[0])
+        let fileName = files[0].name
+        console.log(fileName)
+        form.append("file", files[0], fileName);      
+        
+        let response = await fetch('editPersonJson',{
+            method: 'POST',
+            body: form,
+            });     
+        let result = await response.json();
+           if (response.ok) {
+               console.log("Request status: " + result.requestStatus);
+               document.getElementById('infobox').innerHTML = result.info;
+               document.getElementById('infobox').style.display = 'block';
+               sessionStorage.setItem('token',JSON.stringify(result.token));
+               sessionStorage.setItem('role',JSON.stringify(result.role));
+               userModule.showProfile();
+           } else {
+               document.getElementById('infobox').style.display = 'none';
+               console.log("Ошибка получения данных");                
+           }
     }
 
     async createUser(){
@@ -157,6 +248,8 @@ class UserModule{
         
     }
     
+    // <a class="dropdown-item" id="btn${user.id}a"> Сделать админом  </a>
+    
     async listPersons() {
         const response = await fetch('listPersonsJson',{
         method: 'GET',
@@ -176,31 +269,26 @@ class UserModule{
                             <ul class="list-group text-center mx-auto">
                             <li class="list-group-item" value="${user.id}">
                                 
-                                <img src="insertFile/${user.coverpath}" style="width: 50px;">
+                                <img src="insertFile/${user.coverpath}" style="width: 60px;">
                                 <strong>${user.login}</strong> (${user.money}$)<br>
                                 <p style="color: #909090">${user.name} ${user.surname}
                                 <br>${user.phone}</p>
-                                
-                                <hr>
-                                <form>
-                                <input name="userId" value="${user.id}" hidden>                
-                                <button style="min-width: 200px; margin: 2px;" type="button" class="btn btn-primary" id="btn${user.id}a"> Сделать админом </button>
-                                </form>
 
-                                <form>
-                                <input name="userId" value="${user.id}" hidden>                
-                                <button style="min-width: 200px;margin: 2px;" type="button" class="btn btn-primary" id="btn${user.id}b"> Сделать менеджером </button>
-                                </form>
+                                <div class="dropdown show">
+                                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      Dropdown link
+                                    </a>
 
-                                <form>
-                                <input name="userId" value="${user.id}" hidden>                
-                                <button style="min-width: 200px;margin: 2px;" type="button" class="btn btn-danger" id="btn${user.id}c"> Разжаловать </button>
-                                </form>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                      <a class="dropdown-item" href="#">Action</a>
+                                      <a class="dropdown-item" href="#">Another action</a>
+                                      <a class="dropdown-item" href="#">Something else here</a>
+                                    </div>
+                                  </div>
+                      
+                `;
                 
-                            </li>
-                            </ul>
-                        </div>`;
-                
+
                 user_ids.push(user.id.toString());
             }
             

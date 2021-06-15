@@ -166,14 +166,15 @@ class ProductModule{
   async printEditProductForm() {     
         const response = await fetch('printEditProductFormJson',{
             method: 'GET',
-            headers: {'Content-Type': 'application/json;charset:utf8'}});
+            headers: {'Content-Type': 'application/json;charset:utf8'},});
         
+        var ids = [];
         var result = await response.json();
             if (result.requestStatus == "false") {
                 document.getElementById('info').innerHTML = result.info;
                 document.getElementById('infobox').style.display = 'block';
             } else {
-                if (response.ok){
+                if (response.ok){ 
                     document.getElementById('context').innerHTML = `
                         <div class='text-center justify-content-center'>
                         <h2 class="display-5"> Изменить товар </h2>
@@ -182,27 +183,27 @@ class ProductModule{
                             </select>
                             <div class="col-md-4 mb-3 mx-auto">
                                 <label for="exampleInputEmail1" class="form-label">Название</label>
-                                <input name="name" class="form-control" id="name">
+                                <input name="name" class="form-control" id="name" required>
                             </div>
                             <div class="col-md-4 mb-3 mx-auto">
                                 <label for="exampleInputEmail1" class="form-label">Цена</label>
-                                <input name="price" type="number" min="1" class="form-control" id="price">
+                                <input name="price" type="number" min="1" class="form-control" id="price" required>
                             </div>
                             <div class="col-md-4 mb-3 mx-auto">
                                 <label for="exampleInputEmail1" class="form-label">Категория</label>
-                                <input name="tag" class="form-control" id="tag">
+                                <input name="tag" class="form-control" id="tag" required>
                             </div>    
                             <div class="col-md-4 mb-3 mx-auto">
                                 <label for="exampleInputEmail1" class="form-label">Описание</label>
-                                <input name="description" class="form-control" id="description">
+                                <input name="description" class="form-control" id="description" required>
                             </div>    
                             <div class="col-md-4 mb-3 mx-auto">
                                 <label for="exampleInputEmail1" class="form-label">Обложка</label>
-                                <input name="file" type="file" class="form-control" id="photo">
+                                <input name="file" type="file" class="form-control" id="photo" required>
                             </div> 
                             <div class="col-md-4 mb-3 mx-auto">
                                 <label for="exampleInputEmail1" class="form-label">Количество</label>
-                                <input name="count" type="number" min="1" class="form-control" id="count">
+                                <input name="count" type="number" min="1" class="form-control" id="count" required>
                             </div> 
                             <div class="col-md-4 mb-3 mx-auto">
                                 <button id="btn1" type="submit" class="btn btn-primary"> Изменить </button>   
@@ -218,35 +219,38 @@ class ProductModule{
             }          
                 
             document.getElementById("btn1").addEventListener('click', productModule.editProduct); 
-            document.getElementById("btn2").addEventListener('click', productModule.deleteProduct);
-            
-            var jopa = setInterval(productModule.update(result), 50);
+            document.getElementById("btn2").addEventListener('click', productModule.deleteProduct);            
            
             for (let prod of result) {
                 document.getElementById('idforedit').innerHTML += `
-                    <option data-name="${prod.name}" data-price="${prod.price}" value="${prod.id}">${prod.name} (${prod.tags} | ${prod.price}$)</option>
+                    <option id="o${prod.id}" data-count="${prod.count}" data-name="${prod.name}" data-desc="${prod.cover.description}" data-tag="${prod.tag}" data-price="${prod.price}" value="${prod.id}">${prod.name} (${prod.tag} | ${prod.price}$)</option>
                 `;
-        
-        }
+                ids.push(prod.id.toString());
+            }
+            
+            
+                document.getElementById("idforedit").addEventListener("change", () => {
+                    for (let k of ids) {
+                        console.log(k + document.getElementById("idforedit").value);
+                        if (document.getElementById("idforedit").value == k) {
+                            document.getElementById("name").value = document.getElementById("o" + k).dataset.name;
+                            document.getElementById("price").value = document.getElementById("o" + k).dataset.price;
+                            document.getElementById("description").value = document.getElementById("o" + k).dataset.desc;
+                            document.getElementById("count").value = document.getElementById("o" + k).dataset.count;
+                            var tag = document.getElementById("o" + k).dataset.tag;
+                            tag = tag.replace("[", "").replace("]", "");
+                            document.getElementById("tag").value = tag;
+                        }
+                    }
+                });
 
   }
   
-    update(result) {
-        console.log(result)
-        if (document.getElementById("idforedit").value != "") {
-            console.log(result[document.getElementById("idforedit").value].name);
-            document.getElementById("name").value =  result[document.getElementById("idforedit").value].name;
-                //document.getElementById("price").value =  result[document.getElementById("idforedit").value].price;
-                //document.getElementById("tag").value = document.getElementById("idforedit").value;
-                //document.getElementById("description").value = document.getElementById("idforedit").value;
-        }
-     }
-  
   async editProduct() {
         const response = await fetch('editProductJson',{
-        method: 'POST',
-        body: new FormData(document.getElementById('form')),
-        }); 
+            method: 'POST',
+            body: new FormData(document.getElementById('form')),
+            }); 
         
         var result = await response.json();
             if (response.ok){
